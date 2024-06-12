@@ -2,7 +2,7 @@ import Link from "next/link"
 
 import { siteConfig } from "@/config/site"
 import { buttonVariants } from "@/components/ui/button"
-import { LoginPage } from "./(auth)/login/page"
+import LoginPage from "./(auth)/login/page"
 
 export default function IndexPage() {
   return (

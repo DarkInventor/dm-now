@@ -1,5 +1,6 @@
 "use client"
 
+import { useRouter } from "next/navigation"
 import { Label } from "@radix-ui/react-label"
 
 import { Button } from "@/components/ui/button"
@@ -14,15 +15,12 @@ import {
 import { Input } from "@/components/ui/input"
 import { Icons } from "@/components/icons"
 import OnboardingPage from "@/app/onboarding/page"
-import { useRouter } from 'next/navigation'
 
-export function LoginPage() {
-
-  const router = useRouter();
+export default function LoginPage() {
+  const router = useRouter()
 
   return (
-    
-    <Card className="mx-auto w-full max-w-[500px] mt-20 px-4"> 
+    <Card className="mx-auto w-full max-w-[500px] mt-20 px-4">
       <CardHeader className="space-y-1">
         <CardTitle className="text-2xl">Create an account</CardTitle>
         <CardDescription>
@@ -38,9 +36,8 @@ export function LoginPage() {
           <Label htmlFor="password">Password</Label>
           <Input id="password" type="password" />
         </div>
-   
       </CardContent>
-     
+
       <CardFooter className="justify-between">
         <a
           href="/forgot-password"
@@ -55,19 +52,19 @@ export function LoginPage() {
           >
             Need an account?
           </a>
-          <Button className="w-50 ml-5" onClick={() => router.push('/profile')}>Login</Button>
+          <Button className="w-50 ml-5" onClick={() => router.push("/profile")}>
+            Login
+          </Button>
         </div>
       </CardFooter>
       <CardContent className="grid gap-4 mx-auto">
-      <div className="grid w-full mx-auto">
-        
-          <Button variant="outline" onClick={() => router.push('/onboarding')}>
+        <div className="grid w-full mx-auto">
+          <Button variant="outline" onClick={() => router.push("/onboarding")}>
             {/* <Icons.gitHub className="mr-2 size-4" /> */}
-            What&apos;s dm-Now?  
+            What&apos;s dm-Now?
           </Button>
-          
-        </div> 
-        </CardContent>
+        </div>
+      </CardContent>
     </Card>
   )
 }
