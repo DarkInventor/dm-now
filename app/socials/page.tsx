@@ -24,7 +24,8 @@ export default function SocialsPage() {
   }
 
   return (
-    <Card className="mx-auto w-full max-w-[500px]  mt-20 px-4">
+    <div className="px-4 flex mx-auto">
+    <Card className="mx-auto w-full max-w-[500px] mt-20">
       <CardHeader className="space-y-1">
         <CardTitle className="text-2xl">Socials</CardTitle>
         <CardDescription className="py-3">
@@ -76,5 +77,6 @@ export default function SocialsPage() {
         {/* </div> */}
       </CardFooter>
     </Card>
+  </div>
   )
 }

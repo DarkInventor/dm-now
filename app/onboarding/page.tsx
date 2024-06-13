@@ -25,7 +25,8 @@ export default function OnboardingPage() {
   
 
   return (
-    <Card className="mx-auto w-full max-w-[500px]  mt-20 px-4 ">
+    <div className="px-4 flex mx-auto">
+    <Card className="mx-auto w-full max-w-[500px] mt-20 px-4">
       <CardHeader className="space-y-1">
         <CardTitle className="text-2xl">Onboarding</CardTitle>
         <CardDescription className="py-3">
@@ -63,5 +64,6 @@ export default function OnboardingPage() {
       </CardFooter>
    
     </Card>
+    </div>
   )
 }
