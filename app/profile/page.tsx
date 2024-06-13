@@ -133,7 +133,7 @@ export default function ProfilePage() {
               <FormMessage />
             </FormItem>
           )}
-        />=
+        />
 
         <FormField
           control={form.control}
