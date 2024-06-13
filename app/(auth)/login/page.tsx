@@ -20,7 +20,8 @@ export default function LoginPage() {
   const router = useRouter()
 
   return (
-    <Card className="mx-auto w-full max-w-[500px] mt-20 px-4">
+    <div className="mx-auto px-4">
+    <Card className="w-full max-w-[500px] mt-20">
       <CardHeader className="space-y-1">
         <CardTitle className="text-2xl">Create an account</CardTitle>
         <CardDescription>
@@ -66,5 +67,6 @@ export default function LoginPage() {
         </div>
       </CardContent>
     </Card>
+    </div>
   )
 }
