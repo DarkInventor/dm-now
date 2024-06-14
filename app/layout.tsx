@@ -1,3 +1,4 @@
+
 /* eslint-disable tailwindcss/classnames-order */
 import "@/styles/globals.css"
 import { Metadata } from "next"
@@ -31,6 +32,7 @@ interface RootLayoutProps {
 }
 
 export default function RootLayout({ children }: RootLayoutProps) {
+
   return (
     <>
       <html lang="en" suppressHydrationWarning>
@@ -59,5 +61,6 @@ export default function RootLayout({ children }: RootLayoutProps) {
         </body>
       </html>
     </>
+   
   )
 }

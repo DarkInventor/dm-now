@@ -1,7 +1,7 @@
 "use client"
 
 import { Label } from "@radix-ui/react-label"
-
+import { useState } from 'react'; // Import useState
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -16,11 +16,14 @@ import { Icons } from "@/components/icons"
 import { useRouter } from 'next/navigation' 
 
 export default function OnboardingPage() {
-
+  const [username, setUsername] = useState(''); // Add state for username
     const router = useRouter() // Initialize useRouter
 
     const handleNextClick = () => {
-      router.push('/socials') // Replace '/next-page' with your desired path
+      console.log(username); 
+      
+      const url = `/socials?username=${encodeURIComponent(username)}`;
+      router.push(url);
     }
   
 
@@ -50,7 +53,8 @@ export default function OnboardingPage() {
             <Label htmlFor="username" className="whitespace-nowrap">
               dm.now/
             </Label>
-            <Input id="username" type="text" placeholder="naruto" />
+            <Input id="username" type="text" placeholder="naruto"  value={username} 
+  onChange={(e) => setUsername(e.target.value)}  />
           </div>
         </div>
       </CardContent>
