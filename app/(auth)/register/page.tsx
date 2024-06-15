@@ -309,6 +309,9 @@ export default function RegisterPage() {
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
+        options: {
+          emailRedirectTo: 'https://dm-now.vercel.app/profile' // Set your redirect URL here
+        }
       });
 
       if (error) {
