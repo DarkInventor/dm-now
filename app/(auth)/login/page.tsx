@@ -42,20 +42,20 @@ const defaultValues: Partial<LoginFormValues> = {
 
 export default function LoginPage() {
 
-  useEffect(() => {
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
-      const user = session?.user;
-      if (user) {
-        console.log("User:", user);
-      } else {
-        console.log("No user found.");
-      }
-    });
+  // useEffect(() => {
+  //   const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+  //     const user = session?.user;
+  //     if (user) {
+  //       console.log("User:", user);
+  //     } else {
+  //       console.log("No user found.");
+  //     }
+  //   });
   
-    return () => {
-      listener.subscription.unsubscribe()
-    };
-  }, []);
+  //   return () => {
+  //     listener.subscription.unsubscribe()
+  //   };
+  // }, []);
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginFormSchema),
@@ -64,6 +64,32 @@ export default function LoginPage() {
   });
 
   const router = useRouter();
+
+    const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const checkUser = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user) {
+        router.push("/profile");
+      } else {
+        setLoading(false);
+      }
+    };
+
+    checkUser();
+
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session?.user) {
+        router.push("/profile");
+        router.refresh();
+      }
+    });
+
+    return () => {
+      listener.subscription.unsubscribe();
+    };
+  }, [router]);
 
   const handleLogin = () => {
     alert("Logging in"); 
@@ -81,7 +107,8 @@ export default function LoginPage() {
     supabase.auth.signInWithPassword({
       email,
       password
-    }).then((response ) => {
+    })
+    .then((response ) => {
       if (response.error) {
         console.error("Signin error:", response.error.message);
         alert("Signin failed: " + response.error.message);
@@ -89,8 +116,9 @@ export default function LoginPage() {
         console.log("Signin successful", response.data.user);
         // const { data: { user } } = await supabase.auth.getUser();
       // console.log(user)
-      
+      router.refresh()
         router.push("/profile");
+        
       }
     });
   }

@@ -342,7 +342,9 @@ export default function RegisterPage() {
         } else {
           console.log("Profile created:", profileData);
         }
-
+        setTimeout(() => {
+          alert("We sent you a confirmation email. Please confirm it to activate your account and see the information here.");
+        }, 3000);
         router.push("/profile");
       }
     } catch (error) {

@@ -1,10 +1,15 @@
 "use client"
 
+import { useEffect } from "react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { Icon } from "@radix-ui/react-select"
+import { ArrowRight } from "lucide-react"
 import { useFieldArray, useForm } from "react-hook-form"
 import { z } from "zod"
 
+import { supabase } from "@/lib/api"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { CardContent } from "@/components/ui/card"
@@ -29,9 +34,6 @@ import {
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
 import { toast } from "@/components/ui/use-toast"
-import { useRouter } from "next/navigation"
-import { useEffect } from "react"
-import { supabase } from "@/lib/api"
 
 // Updated schema including all fields
 const profileFormSchema = z.object({
@@ -39,7 +41,9 @@ const profileFormSchema = z.object({
     .string()
     .min(2, { message: "Username must be at least 2 characters." })
     .max(30, { message: "Username must not be longer than 30 characters." }),
-  twitter_id: z.string()
+  email: z.string().email({ message: "Invalid email address." }),
+  twitter_id: z
+    .string()
     .min(2, { message: "Twitter ID must be at least 2 characters." }),
   bio: z.string().max(160).min(4),
   urls: z
@@ -56,64 +60,108 @@ const profileFormSchema = z.object({
   tiktok_id: z.string().optional(),
   facebook_id: z.string().optional(),
   linkedin_id: z.string().optional(),
-});
+})
 
-type ProfileFormValues = z.infer<typeof profileFormSchema>;
+type ProfileFormValues = z.infer<typeof profileFormSchema>
 
 // This can come from your database or API.
-const defaultValues: Partial<ProfileFormValues> = {
-  username: "kathan",
-  bio: "I own a computer.",
-  urls: [
-    { value: "https://shadcn.com" },
-    { value: "http://twitter.com/shadcn" },
-  ],
-  // Ensure to provide default values for all boolean fields as well
-  directToDM: false,
-  redirectCustomURL: false,
-  showPage: true,
-  twitter_id: "kathanmehtaa", // Add or update this line with your Twitter ID
-  instagram_id: "k_t_m_25", // Add or update this line with your Instagram ID
-  tiktok_id: "kathan", // Add or update this line with your TikTok ID
-  facebook_id: "kathan mehta", // Add or update this line with your Facebook ID
-  linkedin_id: "kathan-mehta-software-dev",
-  // Add default values for other fields if necessary
-}
+// const defaultValues: Partial<ProfileFormValues> = {
+//   username: "kathan",
+//   bio: "I own a computer.",
+//   urls: [
+//     { value: "https://shadcn.com" },
+//     { value: "http://twitter.com/shadcn" },
+//   ],
+//   // Ensure to provide default values for all boolean fields as well
+//   directToDM: false,
+//   redirectCustomURL: false,
+//   showPage: true,
+//   twitter_id: "kathanmehtaa", // Add or update this line with your Twitter ID
+//   instagram_id: "k_t_m_25", // Add or update this line with your Instagram ID
+//   tiktok_id: "kathan", // Add or update this line with your TikTok ID
+//   facebook_id: "kathan mehta", // Add or update this line with your Facebook ID
+//   linkedin_id: "kathan-mehta-software-dev",
+//   // Add default values for other fields if necessary
+// }
 
 export default function ProfilePage() {
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
-    defaultValues,
+    // defaultValues,
     mode: "onChange",
-  });
+  })
+
+  // useEffect(() => {
+  //   const { data: listener } = supabase.auth.onAuthStateChange(async (_event, session) => {
+  //     const user = session?.user;
+  //     if (user) {
+  //       console.log("User:", user);
+  //       console.log("User id:", user.id);
+
+  //       const { data, error } = await supabase
+  //       .from('influencer_profiles')
+  //       .select('*');
+
+  //       console.log("data from db retrieved::", data);
+  //     } else {
+  //       console.log("No user found.");
+  //     }
+  //   });
+
+  //   return () => {
+  //     listener.subscription.unsubscribe()
+  //   };
+  // }, []);
 
   useEffect(() => {
-    const { data: listener } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      const user = session?.user;
-      if (user) {
-        console.log("User:", user);
-        console.log("User id:", user.id);
+    const { data: listener } = supabase.auth.onAuthStateChange(
+      async (_event, session) => {
+        const user = session?.user
+        if (user) {
+          console.log("User:", user)
+          console.log("User id:", user.id)
 
-        const { data, error } = await supabase
-        .from('influencer_profiles')
-        .select('*');
+          // Fetch profile data for the logged-in user
+          const { data, error } = await supabase
+            .from("influencer_profiles")
+            .select("*")
+            .eq("id", user.id)
 
-        console.log("data from db retrieved::", data);
-      } else {
-        console.log("No user found.");
+          if (error) {
+            console.error("Error fetching profile data:", error)
+            return
+          }
+
+          if (data) {
+            console.log("Profile data from db retrieved:", data)
+            // Dynamically set the form values with the fetched data
+            form.reset({
+              username: data[0].username,
+              email: data[0].email,
+              twitter_id: data[0].twitter_url,
+              instagram_id: data[0].instagram_url,
+              tiktok_id: data[0].tiktok_url,
+              facebook_id: data[0].facebook_url,
+              linkedin_id: data[0].linkedin_url,
+              // Add other fields as necessary
+              // For arrays or objects, ensure they are formatted as expected by your form
+            })
+          }
+        } else {
+          console.log("No user found.")
+        }
       }
-    });
-  
+    )
+
     return () => {
       listener.subscription.unsubscribe()
-    };
-  }, []);
-
+    }
+  }, [form])
 
   const { fields, append } = useFieldArray({
     name: "urls",
     control: form.control,
-  });
+  })
 
   function onSubmit(data: ProfileFormValues) {
     toast({
@@ -123,13 +171,27 @@ export default function ProfilePage() {
           <code className="text-white">{JSON.stringify(data, null, 2)}</code>
         </pre>
       ),
-    });
+    })
   }
 
-  const router = useRouter();
+  const router = useRouter()
 
-  const handleNextClick = () => {
-    router.push("/account") // Replace '/next-page' with your desired path
+  const handleNextClick = async (event: { preventDefault: () => void }) => {
+    event.preventDefault();
+    const { error } = await supabase.auth.signOut();
+
+    if (!error) {
+      const url = `${window.location.origin}/login`;
+      router.push(url);
+    } else {
+      console.error('Error signing out:', error);
+    }
+   
+  
+    if (error) {
+      console.error('Error signing out:', error);
+    }
+      
   }
 
   return (
@@ -139,9 +201,9 @@ export default function ProfilePage() {
         className="space-y-8 mx-auto mt-2 px-4 mb-10"
       >
         <h3 className="mt-8 scroll-m-20 text-2xl font-semibold tracking-tight">
-          My page settings
+          My Information
         </h3>
-        
+
         <FormField
           control={form.control}
           name="username"
@@ -153,7 +215,7 @@ export default function ProfilePage() {
               </FormControl>
               <FormDescription>
                 This is your public display name. It can be your real name or a
-                pseudonym. You can only change this once every 30 days.
+                pseudonym.
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -161,6 +223,23 @@ export default function ProfilePage() {
         />
 
         <FormField
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Email</FormLabel>
+              <FormControl>
+                <Input type="email" placeholder="naruto@example.com" {...field} />
+              </FormControl>              
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <h3 className="mt-8 scroll-m-20 text-2xl font-medium tracking-tight">
+          Social Media
+        </h3>
+        {/* <FormField
           control={form.control}
           name="directToDM"
           render={({ field }) => (
@@ -218,7 +297,7 @@ export default function ProfilePage() {
               </FormLabel>
             </FormItem>
           )}
-        />
+        /> */}
 
         <FormField
           control={form.control}
@@ -307,13 +386,22 @@ export default function ProfilePage() {
           )}
         />
         {/* </CardContent> */}
+      
 
-        <Button type="submit" className="mb-20" onClick={handleNextClick}>Update profile</Button>
+        <Button
+          type="submit"
+          className="mb-20 flex justify-center items-center gap-2"
+          onClick={handleNextClick}
+        >
+         Logout 
+        </Button>
 
+        <h3 className="mt-8 scroll-m-20 text-md text-gray-600 tracking-tight">
+          Need to update your profile information? Please contact us via email at <a href="mailto:ktmehta25@gmail.com" className="text-blue-600 hover:text-blue-800">ktmehta25@gmail.com</a>.
+        </h3>
 
-        
         {/* <Button type="submit" className="mb-20">Update profile</Button> */}
       </form>
     </Form>
-  );
+  )
 }

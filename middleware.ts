@@ -1,8 +1,13 @@
-import { type NextRequest } from 'next/server'
+import { NextResponse, type NextRequest } from 'next/server'
 import { updateSession } from '@/utils/supabase/middleware'
+import { supabase } from './lib/api'
+import router from 'next/router';
 
 export async function middleware(request: NextRequest) {
+
   return await updateSession(request)
+
+  
 }
 
 export const config = {
