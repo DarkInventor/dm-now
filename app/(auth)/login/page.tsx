@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/card"
 import { Icons } from "@/components/icons"
 import OnboardingPage from "@/app/onboarding/page"
-import { useState } from 'react'; 
+import { useEffect, useState } from 'react'; 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
@@ -41,6 +41,21 @@ const defaultValues: Partial<LoginFormValues> = {
 }
 
 export default function LoginPage() {
+
+  useEffect(() => {
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      const user = session?.user;
+      if (user) {
+        console.log("User:", user);
+      } else {
+        console.log("No user found.");
+      }
+    });
+  
+    return () => {
+      listener.subscription.unsubscribe()
+    };
+  }, []);
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginFormSchema),
@@ -72,6 +87,9 @@ export default function LoginPage() {
         alert("Signin failed: " + response.error.message);
       } else {
         console.log("Signin successful", response.data.user);
+        // const { data: { user } } = await supabase.auth.getUser();
+      // console.log(user)
+      
         router.push("/profile");
       }
     });

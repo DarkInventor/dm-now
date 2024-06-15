@@ -30,6 +30,8 @@ import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
 import { toast } from "@/components/ui/use-toast"
 import { useRouter } from "next/navigation"
+import { useEffect } from "react"
+import { supabase } from "@/lib/api"
 
 // Updated schema including all fields
 const profileFormSchema = z.object({
@@ -84,6 +86,29 @@ export default function ProfilePage() {
     defaultValues,
     mode: "onChange",
   });
+
+  useEffect(() => {
+    const { data: listener } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      const user = session?.user;
+      if (user) {
+        console.log("User:", user);
+        console.log("User id:", user.id);
+
+        const { data, error } = await supabase
+        .from('influencer_profiles')
+        .select('*');
+
+        console.log("data from db retrieved::", data);
+      } else {
+        console.log("No user found.");
+      }
+    });
+  
+    return () => {
+      listener.subscription.unsubscribe()
+    };
+  }, []);
+
 
   const { fields, append } = useFieldArray({
     name: "urls",
