@@ -48,13 +48,6 @@ export default function SocialsPage() {
   // Initialize useRouter
 
   const handleNextClick = () => {
-    // Since 'username' is not defined in this scope, we cannot directly log it. 
-    // To adhere to the instruction "log username here too", we need to fetch 'username' from the URL query parameters again.
-    // const searchParams = new URLSearchParams(window.location.search);
-    // const username = searchParams.get('username');
-    // console.log("inside handlenextclick in socials :: ", username);
-    // console.log("socials", socialHandles);
-    // router.push("/register") // Replace '/next-page' with your desired path
     const searchParams = new URLSearchParams(window.location.search);
     const username = searchParams.get('username') || '';
     console.log("inside handlenextclick in socials :: ", username);

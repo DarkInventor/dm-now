@@ -64,54 +64,12 @@ const profileFormSchema = z.object({
 
 type ProfileFormValues = z.infer<typeof profileFormSchema>
 
-// This can come from your database or API.
-// const defaultValues: Partial<ProfileFormValues> = {
-//   username: "kathan",
-//   bio: "I own a computer.",
-//   urls: [
-//     { value: "https://shadcn.com" },
-//     { value: "http://twitter.com/shadcn" },
-//   ],
-//   // Ensure to provide default values for all boolean fields as well
-//   directToDM: false,
-//   redirectCustomURL: false,
-//   showPage: true,
-//   twitter_id: "kathanmehtaa", // Add or update this line with your Twitter ID
-//   instagram_id: "k_t_m_25", // Add or update this line with your Instagram ID
-//   tiktok_id: "kathan", // Add or update this line with your TikTok ID
-//   facebook_id: "kathan mehta", // Add or update this line with your Facebook ID
-//   linkedin_id: "kathan-mehta-software-dev",
-//   // Add default values for other fields if necessary
-// }
-
 export default function ProfilePage() {
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
     // defaultValues,
     mode: "onChange",
   })
-
-  // useEffect(() => {
-  //   const { data: listener } = supabase.auth.onAuthStateChange(async (_event, session) => {
-  //     const user = session?.user;
-  //     if (user) {
-  //       console.log("User:", user);
-  //       console.log("User id:", user.id);
-
-  //       const { data, error } = await supabase
-  //       .from('influencer_profiles')
-  //       .select('*');
-
-  //       console.log("data from db retrieved::", data);
-  //     } else {
-  //       console.log("No user found.");
-  //     }
-  //   });
-
-  //   return () => {
-  //     listener.subscription.unsubscribe()
-  //   };
-  // }, []);
 
   useEffect(() => {
     const { data: listener } = supabase.auth.onAuthStateChange(
@@ -238,66 +196,7 @@ export default function ProfilePage() {
 
         <h3 className="mt-8 scroll-m-20 text-2xl font-medium tracking-tight">
           Social Media
-        </h3>
-        {/* <FormField
-          control={form.control}
-          name="directToDM"
-          render={({ field }) => (
-            <FormItem className="flex flex-row items-center">
-              <FormControl>
-                <Switch
-                  name={field.name}
-                  id="directToDM"
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                />
-              </FormControl>
-              <FormLabel className="ml-2">
-                Go directly to my DM {field.value ? "on" : "off"}
-              </FormLabel>
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="redirectCustomURL"
-          render={({ field }) => (
-            <FormItem className="flex flex-row items-center">
-              <FormControl>
-                <Switch
-                  name={field.name}
-                  id="redirectCustomURL"
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                />
-              </FormControl>
-              <FormLabel className="ml-2">
-                Redirect to a custom URL {field.value ? "on" : "off"}
-              </FormLabel>
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="showPage"
-          render={({ field }) => (
-            <FormItem className="flex flex-row items-center">
-              <FormControl>
-                <Switch
-                  name={field.name}
-                  id="showPage"
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                />
-              </FormControl>
-              <FormLabel className=" ml-2">
-                Show my page {field.value ? "on" : "off"}
-              </FormLabel>
-            </FormItem>
-          )}
-        /> */}
+        </h3>    
 
         <FormField
           control={form.control}
@@ -385,9 +284,7 @@ export default function ProfilePage() {
             </FormItem>
           )}
         />
-        {/* </CardContent> */}
       
-
         <Button
           type="submit"
           className="mb-20 flex justify-center items-center gap-2"

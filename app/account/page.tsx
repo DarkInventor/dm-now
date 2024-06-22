@@ -16,26 +16,6 @@ import {
 import { Input } from "@/components/ui/input"
 import { toast } from "@/components/ui/use-toast"
 
-// const profileFormSchema = z.object({
-//   name: z
-//     .string()
-//     .min(2, { message: "Name must be at least 2 characters." })
-//     .max(30, { message: "Name must not be longer than 30 characters." }),
-//   email: z.string().email({ message: "Invalid email address." }),
-//   currentPassword: z
-//     .string()
-//     .min(6, { message: "Password must be at least 6 characters." }),
-//   newPassword: z
-//     .string()
-//     .min(6, { message: "Password must be at least 6 characters." }),
-//   confirmPassword: z
-//     .string()
-//     .min(6, { message: "Password must be at least 6 characters." })
-//     .refine((data: any, { parent }: any) => data === parent.newPassword, {
-//       message: "Passwords must match.",
-//     }),
-// })
-
 const profileFormSchema = z.object({
     name: z
       .string()
