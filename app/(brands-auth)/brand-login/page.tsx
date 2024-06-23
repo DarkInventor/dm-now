@@ -56,7 +56,7 @@ export default function LoginPage() {
     const checkUser = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session?.user) {
-        router.push("/profile");
+        router.push("/brand-profile");
       } else {
         setLoading(false);
       }
@@ -76,9 +76,8 @@ export default function LoginPage() {
     };
   }, [router]);
 
-  const handleBrandRegistration = () => {
-    // alert("Logging in"); 
-    router.push("/brand-login");
+  const handleLogin = () => {
+    alert("Logging in"); 
     // Here you can use form.getValues() to get email and password
     console.log("Logging in with:", form.getValues());
     // router.push("/profile");
@@ -113,10 +112,10 @@ export default function LoginPage() {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-8 mx-auto mt-2 px-4 mb-10"
+        className="mx-auto mb-10 mt-2 space-y-8 px-4"
       >
         <div className="mx-auto px-4">
-          <Card className="w-full max-w-[500px] mt-20">
+          <Card className="w-full max-w-[500px] mt-0">
             <CardHeader className="space-y-1">
               <CardTitle className="text-2xl">Create an account</CardTitle>
               <CardDescription>
@@ -163,7 +162,7 @@ export default function LoginPage() {
               </a>
               <div className="flex justify-between items-center">
                 <a
-                  href="/onboarding"
+                  href="/brand-onboarding"
                   className="text-black-500 text-sm hover:underline"
                 >
                   Need an account?
@@ -172,15 +171,7 @@ export default function LoginPage() {
                   Login
                 </Button>
               </div>
-            </CardFooter>
-            <CardContent className="grid gap-4 mx-auto">
-              <div className="grid w-full mx-auto">
-                <Button variant="outline" onClick={handleBrandRegistration}>
-                  {/* <Icons.gitHub className="mr-2 size-4" /> */}
-                  Brands: Register Here
-                </Button>
-              </div>
-            </CardContent>
+            </CardFooter>          
           </Card>
         </div>
       </form>
